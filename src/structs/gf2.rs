@@ -7,6 +7,7 @@ actual field elements, so our FieldElement can just be a boolean.
 */
 
 // let's call it gf2 for now..
+#[derive(Copy, Clone)]
 pub struct GF2 {
     value: bool // we can use 0 or 1 in the instansiation :D 
 }
@@ -42,6 +43,18 @@ impl Add for GF2 {
 
 impl fmt::Display for GF2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.value)
+        if self.value {
+            return write!(f, "1");
+        }
+        else {
+            return write!(f, "0");
+        }
+    }
+}
+
+
+impl PartialEq for GF2 {
+    fn eq(&self, other: &Self) -> bool {
+        self.value == other.value
     }
 }

@@ -29,6 +29,7 @@ impl Field {
 }
 
 impl Field {
+    #[allow(dead_code)]
     pub fn contains(&self, field_element: &FieldElement) -> bool {
         for i in 0..self.values.len() {
             if self.values[i] == *field_element {
@@ -41,7 +42,8 @@ impl Field {
 
 impl Field {
     // prints a list of the field elements
-    fn list(&self){
+    #[allow(dead_code)]
+    pub fn list(&self){
         for i in 0..self.values.len() {
             println!("{}", self.values[i]);
         }

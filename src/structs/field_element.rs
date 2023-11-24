@@ -27,10 +27,10 @@ impl FieldElement {
 
 
 // implement addition
-impl Add for FieldElement {
-    type Output = Self;
+impl<'a> Add for &'a FieldElement {
+    type Output = FieldElement;
 
-    fn add(self, other: Self) -> Self {
+    fn add(self, other: Self) -> FieldElement {
         let mut new_values = Vec::new();
         for i in 0..self.n {
             new_values.push(self.values[i] + other.values[i]);
@@ -53,11 +53,11 @@ impl PartialEq for FieldElement {
 impl fmt::Display for FieldElement {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut s = String::new();
-        s.push("[");
+        s.push('[');
         for i in 0..self.n {
             s.push_str(&format!(" {} ", self.values[i]));
         }
-        s.push("[");
+        s.push(']');
         write!(f, "{}", s)
     }
 }
