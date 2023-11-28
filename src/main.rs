@@ -5,7 +5,7 @@ use structs::field_element::FieldElement;
 use structs::gf2::GF2;
 
 fn main() {
-    let field = Field::new(8);
+    let field = Field::new(4);
     println!("{}", field);
 
     let x1: FieldElement = field.get_random_element();
@@ -18,6 +18,9 @@ fn main() {
 
     println!("x3: {}", x3);
     println!("x1: {}, x2: {}", x1, x2);
+
+    let x4 = &x1 * &x2; /* remember mod i done */
+    println!("x4 (x1*x2): {}", x4);
 
 
     let e1: GF2 = GF2::new(0);

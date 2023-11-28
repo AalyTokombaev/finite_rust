@@ -32,6 +32,17 @@ impl GF2 {
 
 }
 
+impl GF2 {
+    pub fn to_int(&self) -> u32 {
+        if self.value {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+}
+
 // implement addition
 impl Add for GF2 {
     type Output = Self;
