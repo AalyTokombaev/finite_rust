@@ -1,33 +1,30 @@
 extern crate modulo;
 use modulo::Mod;
-use std::fmt; 
+use std::fmt;
 use std::ops::{Add, Mul};
 use std::cmp::PartialEq;
 use super::gf2::GF2;
-
+use super::field::Field;
 
 pub struct FieldElement {
     n: usize,
-    values: Vec<GF2>
+    values: Vec<GF2>,
+    primitive_poly: Vec<GF2>,
 }
 
 impl FieldElement {
-    pub fn new(n: usize, values: Vec<GF2>) -> Self {
-        FieldElement { n, values }
+    pub fn new(n: usize, values: Vec<GF2>, primitive_poly: Vec<GF2>) -> Self {
+        FieldElement { n, values, primitive_poly }
     }
-}
 
-
-impl FieldElement {
     pub fn clone(&self) -> Self {
         let mut new_values = Vec::new();
         for i in 0..self.n {
             new_values.push(self.values[i].clone());
         }
-        FieldElement { n: self.n, values: new_values }
+        FieldElement { n: self.n, values: new_values, primitive_poly: self.primitive_poly.clone() }
     }
 }
-
 
 // implement addition
 impl<'a> Add for &'a FieldElement {
@@ -38,17 +35,8 @@ impl<'a> Add for &'a FieldElement {
         for i in 0..self.n {
             new_values.push(self.values[i] + other.values[i]);
         }
-        FieldElement { n: self.n, values: new_values }
+        FieldElement { n: self.n, values: new_values, primitive_poly: self.primitive_poly.clone() }
     }
-}
-
-
-fn vec_to_int(values: &Vec<GF2>) -> u32 {
-    let mut result = 0;
-    for i in 0..values.len() {
-        result += values[i].to_int() << i;
-    }
-    result
 }
 
 // implement multiplication
@@ -56,19 +44,17 @@ impl<'a> Mul for &'a FieldElement {
     type Output = FieldElement;
 
     fn mul(self, other: Self) -> FieldElement {
-        let lhs = vec_to_int(&self.values);
-        let rhs = vec_to_int(&other.values);
-        let result = (lhs * rhs).modulo(2_u32.pow(self.n as u32)-1)   ;
-        let mut new_values = Vec::new();
-        let mut binary = format!("{:b}", result);
-        while binary.len() < self.n {
-            binary = format!("0{}", binary);
+        let mut result = FieldElement::new(self.n, vec![GF2::new(0); self.n], self.primitive_poly.clone());
+        for i in 0..self.n {
+            for j in 0..self.n {
+                if i + j < self.n {
+                    result.values[i + j] = result.values[i + j] + self.values[i] * other.values[j];
+                } else {
+                    result.values[i + j - self.n] = result.values[i + j - self.n] + self.values[i] * other.values[j];
+                }
+            }
         }
-        for c in binary.chars() {
-            new_values.push(GF2::new(c.to_digit(10).unwrap() as i8));
-        }
-
-        FieldElement { n: self.n, values: new_values }
+        FieldElement { n: self.n, values: self.values.clone(), primitive_poly: self.primitive_poly.clone() }
     }
 }
 
@@ -95,5 +81,10 @@ impl fmt::Display for FieldElement {
     }
 }
 
-
-
+fn vec_to_int(values: &Vec<GF2>) -> u32 {
+    let mut result = 0;
+    for i in 0..values.len() {
+        result += values[i].to_int() << i;
+    }
+    result
+}

@@ -1,5 +1,5 @@
 use std::fmt;
-use std::ops::Add;
+use std::ops::{Add, Mul};
 
 /*
 So let's think for a bit here... I think working with vectors is going to be a lot easier than working with
@@ -49,6 +49,14 @@ impl Add for GF2 {
 
     fn add(self, other: Self) -> Self {
         GF2 { value: self.value ^ other.value }
+    }
+}
+
+impl Mul for GF2 {
+    type Output = Self;
+
+    fn mul(self, other: Self) -> Self {
+        GF2 { value: self.value & other.value }
     }
 }
 

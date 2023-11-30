@@ -5,11 +5,18 @@ use structs::field_element::FieldElement;
 use structs::gf2::GF2;
 
 fn main() {
-    let field = Field::new(4);
+    /* 
+        gonna use the primitive poly x^3 + x + 1 for now
+        this is represented by the string 1011, we cut off the first 1 getting 011
+    */
+    let field = Field::new(4, vec![GF2::new(0), GF2::new(0), GF2::new(1), GF2::new(1)]);
     println!("{}", field);
 
     let x1: FieldElement = field.get_random_element();
     let x2: FieldElement = field.get_random_element();
+
+    let y1 : FieldElement = field.from_integer(4);
+    let y2 : FieldElement = field.from_integer(5);
 
 
     println!("x1: {}, x2: {}", x1, x2);
