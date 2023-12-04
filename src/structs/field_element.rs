@@ -1,10 +1,8 @@
 extern crate modulo;
-use modulo::Mod;
 use std::fmt;
 use std::ops::{Add, Mul};
 use std::cmp::PartialEq;
 use super::gf2::GF2;
-use super::field::Field;
 
 pub struct FieldElement {
     n: usize,
@@ -39,24 +37,47 @@ impl<'a> Add for &'a FieldElement {
     }
 }
 
-// implement multiplication
 impl<'a> Mul for &'a FieldElement {
     type Output = FieldElement;
 
-    fn mul(self, other: Self) -> FieldElement {
-        let mut result = FieldElement::new(self.n, vec![GF2::new(0); self.n], self.primitive_poly.clone());
+
+    
+    fn mul(self, b: Self) -> FieldElement {
+        let _primitive_bits = vec_to_int(&self.primitive_poly);
+        // represent primitive poly as a bit vector
+        let mut primitive_bits = Vec::new();
+        let mut temp = vec_to_int(&self.primitive_poly);
+        while temp > 0 {
+            primitive_bits.push(temp % 2);
+            temp = temp / 2;
+        }
+    
+        println!("primitive_bits: {:?}", primitive_bits);
+
+        let mut result: i8 = 0b0;
+        let mut b: i8 = vec_to_int(&b.values) as i8;
+
         for i in 0..self.n {
-            for j in 0..self.n {
-                if i + j < self.n {
-                    result.values[i + j] = result.values[i + j] + self.values[i] * other.values[j];
-                } else {
-                    result.values[i + j - self.n] = result.values[i + j - self.n] + self.values[i] * other.values[j];
-                }
+            let bit = self.values[i].to_int();
+            if bit == 1 {
+                result = result ^ b;
+            }
+            b = b << 1;
+            if b >= (1 << self.n) {
+                b = b ^ vec_to_int(&self.primitive_poly) as i8;
             }
         }
-        FieldElement { n: self.n, values: self.values.clone(), primitive_poly: self.primitive_poly.clone() }
+
+        let mut result_vec = Vec::new();
+        for _ in 0..self.n {
+            result_vec.insert(0, GF2::new(result & 0b1));
+            result = result >> 1;
+        }
+
+        FieldElement { n: self.n, values: result_vec, primitive_poly: self.primitive_poly.clone() }
     }
 }
+
 
 impl PartialEq for FieldElement {
     fn eq(&self, other: &Self) -> bool {

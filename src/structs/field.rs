@@ -31,9 +31,7 @@ impl Field {
 
 impl Field {
     pub fn from_integer(&self, num: u32) -> FieldElement {
-        if num < 0 {
-            panic!("FieldElement cannot be instantiated with a negative integer");
-        } else if num >= 2u32.pow(self.n as u32) {
+        if num >= 2u32.pow(self.n as u32) {
             panic!("FieldElement cannot be instantiated with an integer larger than 2^n");
         }
 
@@ -73,6 +71,7 @@ impl Field {
 }
 
 impl Field {
+    #[allow(dead_code)]
     pub fn get_random_element(&self) -> FieldElement {
         let mut rng = rand::thread_rng();
         let i = rng.gen_range(0..self.values.len());
