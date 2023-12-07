@@ -43,6 +43,15 @@ impl GF2 {
     }
 }
 
+impl GF2 {
+    pub fn to_string (&self) -> String {
+        match self.value {
+            true => String::from("1"),
+            false => String::from("0")
+        }
+    }
+}
+
 // implement addition
 impl Add for GF2 {
     type Output = Self;
@@ -60,6 +69,7 @@ impl Mul for GF2 {
     }
 }
 
+
 impl fmt::Display for GF2 {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.value {
@@ -75,5 +85,19 @@ impl fmt::Display for GF2 {
 impl PartialEq for GF2 {
     fn eq(&self, other: &Self) -> bool {
         self.value == other.value
+    }
+}
+
+pub struct GF2Vec(pub Vec<GF2>);
+
+impl fmt::Display for GF2Vec {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut s = String::new();
+        s.push('[');
+        for i in 0..self.0.len() {
+            s.push_str(&format!(" {} ", self.0[i]));
+        }
+        s.push(']');
+        write!(f, "{}", s)
     }
 }

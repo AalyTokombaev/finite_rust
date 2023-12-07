@@ -2,7 +2,7 @@ extern crate modulo;
 use std::fmt;
 use std::ops::{Add, Mul, Shl};
 use std::cmp::PartialEq;
-use super::gf2::GF2;
+use super::gf2::{GF2, GF2Vec};
 
 pub struct FieldElement {
     n: usize,
@@ -24,19 +24,22 @@ impl FieldElement {
     }
 }
 
-impl Shl<u8> for FieldElement {
-    type Output = FieldElement;
+impl <'a> Shl<u8> for &'a FieldElement {
+    type Output = FieldElement; 
     fn shl(self, rhs: u8) -> FieldElement {
         let mut modulate = false;
+        let mut new_values = self.values.clone();
         if self.values[0].to_int() == 1 {
+            new_values[0] = GF2::new(0);
             modulate  = true;
         }
-        let mut new_values = self.values.clone();
         for _ in 0..rhs {
             new_values.rotate_left(1);
         }
+
         if modulate {
-            // prefrom a xor with the primitive poly
+            // println!("modulating");
+            // println!("primitive poly: {}", GF2Vec(self.primitive_poly.clone()));
             for i in 0..self.n {
                 new_values[i] = new_values[i] + self.primitive_poly[i];
             }
@@ -66,12 +69,14 @@ impl<'a> Mul for &'a FieldElement {
 
     
     fn mul(self, b: Self) -> FieldElement {
+        println!("multiplying {} and {}", self, b);
         let mut b_tmp = b.clone();
         let mut R = FieldElement::new(self.n, vec![GF2::new(0); self.n], self.primitive_poly.clone());
         for i in 0..self.n {
-           b_tmp=  b_tmp << (1 as u8) ;
+           b_tmp= &b_tmp << (1 as u8);
            println!("i : {}, b_tmp: {}", i, b_tmp);
            if self.values[i].to_int() == 1 {
+               println!("R: {}, b_tmp: {}", R, b_tmp);
                R = &R + &b_tmp;
            }
         }

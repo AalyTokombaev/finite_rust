@@ -22,11 +22,24 @@ fn main() {
 
     let _y1 : FieldElement = field.from_integer(4);
     let _y2 : FieldElement = field.from_integer(5);
+
+
     
 
 
 
     println!("x1: {}, x2: {}", x1, x2);
+
+    println!("attempting to bitshift x1: {} by one", x1);
+
+    let mut x1_shifted = &x1 << 1;
+    println!("x1 shifted: {}", x1_shifted);
+
+    x1_shifted = &x1_shifted << 1;
+    println!("x1 shifted again: {}", x1_shifted);
+
+    x1_shifted = &x1_shifted << 1;
+    println!("x1 shifted again: {}", x1_shifted);
 
     let x3: FieldElement = &x1 + &x2;
 
