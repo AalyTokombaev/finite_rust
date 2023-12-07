@@ -1,6 +1,6 @@
 extern crate modulo;
 use std::fmt;
-use std::ops::{Add, Mul};
+use std::ops::{Add, Mul, Shl};
 use std::cmp::PartialEq;
 use super::gf2::GF2;
 
@@ -24,6 +24,29 @@ impl FieldElement {
     }
 }
 
+impl Shl<u8> for FieldElement {
+    type Output = FieldElement;
+    fn shl(self, rhs: u8) -> FieldElement {
+        let mut modulate = false;
+        if self.values[0].to_int() == 1 {
+            modulate  = true;
+        }
+        let mut new_values = self.values.clone();
+        for _ in 0..rhs {
+            new_values.rotate_left(1);
+        }
+        if modulate {
+            // prefrom a xor with the primitive poly
+            for i in 0..self.n {
+                new_values[i] = new_values[i] + self.primitive_poly[i];
+            }
+        }
+    FieldElement { n: self.n, values: new_values, primitive_poly: self.primitive_poly.clone() }
+    }
+}
+
+
+
 // implement addition
 impl<'a> Add for &'a FieldElement {
     type Output = FieldElement;
@@ -43,38 +66,16 @@ impl<'a> Mul for &'a FieldElement {
 
     
     fn mul(self, b: Self) -> FieldElement {
-        let _primitive_bits = vec_to_int(&self.primitive_poly);
-        // represent primitive poly as a bit vector
-        let mut primitive_bits = Vec::new();
-        let mut temp = vec_to_int(&self.primitive_poly);
-        while temp > 0 {
-            primitive_bits.push(temp % 2);
-            temp = temp / 2;
-        }
-    
-        println!("primitive_bits: {:?}", primitive_bits);
-
-        let mut result: i8 = 0b0;
-        let mut b: i8 = vec_to_int(&b.values) as i8;
-
+        let mut b_tmp = b.clone();
+        let mut R = FieldElement::new(self.n, vec![GF2::new(0); self.n], self.primitive_poly.clone());
         for i in 0..self.n {
-            let bit = self.values[i].to_int();
-            if bit == 1 {
-                result = result ^ b;
-            }
-            b = b << 1;
-            if b >= (1 << self.n) {
-                b = b ^ vec_to_int(&self.primitive_poly) as i8;
-            }
+           b_tmp=  b_tmp << (1 as u8) ;
+           println!("i : {}, b_tmp: {}", i, b_tmp);
+           if self.values[i].to_int() == 1 {
+               R = &R + &b_tmp;
+           }
         }
-
-        let mut result_vec = Vec::new();
-        for _ in 0..self.n {
-            result_vec.insert(0, GF2::new(result & 0b1));
-            result = result >> 1;
-        }
-
-        FieldElement { n: self.n, values: result_vec, primitive_poly: self.primitive_poly.clone() }
+        R
     }
 }
 
