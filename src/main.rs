@@ -17,8 +17,8 @@ fn main() {
     let x1: FieldElement = field.get_random_element();
     let x2: FieldElement = field.get_random_element();
     */ 
-    let x1: FieldElement = field.from_integer(1);
-    let x2: FieldElement = field.from_integer(3);
+    let x1: FieldElement = field.from_integer(2);
+    let x2: FieldElement = field.from_integer(4);
 
     let _y1 : FieldElement = field.from_integer(4);
     let _y2 : FieldElement = field.from_integer(5);
@@ -29,17 +29,6 @@ fn main() {
 
 
     println!("x1: {}, x2: {}", x1, x2);
-
-    println!("attempting to bitshift x1: {} by one", x1);
-
-    let mut x1_shifted = &x1 << 1;
-    println!("x1 shifted: {}", x1_shifted);
-
-    x1_shifted = &x1_shifted << 1;
-    println!("x1 shifted again: {}", x1_shifted);
-
-    x1_shifted = &x1_shifted << 1;
-    println!("x1 shifted again: {}", x1_shifted);
 
     let x3: FieldElement = &x1 + &x2;
 
@@ -56,6 +45,15 @@ fn main() {
     println!("e1: {}, e2: {}", e1, e2);
 
     println!("Yeah!");
+
+    let b = field.from_integer(4);
+    println!("b: {}", b);
+    println!("b << 1 {}", &b << 1);
+    println!("b << 2 {}", &b << 2);
+    println!("b << 3 {}", &b << 3);
+    println!("b << 4 {}", &b << 4);
+    println!("b << 5 {}", &b << 5);
+
     
 
 }

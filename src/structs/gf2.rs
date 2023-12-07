@@ -53,10 +53,10 @@ impl GF2 {
 }
 
 // implement addition
-impl Add for GF2 {
-    type Output = Self;
+impl <'a> Add for &'a GF2 {
+    type Output = GF2;
 
-    fn add(self, other: Self) -> Self {
+    fn add(self, other: Self) -> GF2 {
         GF2 { value: self.value ^ other.value }
     }
 }
@@ -90,6 +90,7 @@ impl PartialEq for GF2 {
 
 pub struct GF2Vec(pub Vec<GF2>);
 
+#[allow(dead_code)]
 impl fmt::Display for GF2Vec {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let mut s = String::new();
