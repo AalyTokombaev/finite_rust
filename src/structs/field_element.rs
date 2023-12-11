@@ -2,13 +2,16 @@ extern crate modulo;
 use std::fmt;
 use std::ops::{Add, Mul, Shl};
 use std::cmp::PartialEq;
-use super::gf2::{GF2, GF2Vec};
+use super::gf2::{GF2};
 
+
+#[derive(Clone)]
 pub struct FieldElement {
     n: usize,
     values: Vec<GF2>,
     primitive_poly: Vec<GF2>,
 }
+
 
 impl FieldElement {
     pub fn new(n: usize, values: Vec<GF2>, primitive_poly: Vec<GF2>) -> Self {
@@ -24,12 +27,23 @@ impl FieldElement {
     }
 }
 
+impl FieldElement {
+    pub fn copy(&self) -> FieldElement {
+        let mut new_values = Vec::new();
+        for i in 0..self.n {
+            new_values.push(self.values[i].clone());
+        }
+        FieldElement { n: self.n, values: new_values, primitive_poly: self.primitive_poly.clone() }
+    }
+
+}
+
 impl <'a> Shl<u8> for &'a FieldElement {
     type Output = FieldElement; 
     fn shl(self, rhs: u8) -> FieldElement {
         let mut new_values = self.values.clone();
         // println!("primitive polynomial: {}", GF2Vec(self.primitive_poly.clone()));
-        for i in 0..rhs {
+        for _ in 0..rhs {
             if new_values[0].to_int() == 1 {
                 new_values[0] = GF2::new(0);
                 new_values.rotate_left(1);
@@ -60,28 +74,25 @@ impl<'a> Add for &'a FieldElement {
 
 impl<'a> Mul for &'a FieldElement {
     type Output = FieldElement; 
+
+
     fn mul(self, b: Self) -> FieldElement {
-        println!("multiplying {} and {}", self, b);
-
-        let mut overflow: bool = false;
-        let mut b_prime = b.clone();
-        println!("b_prime at the start: {}", b_prime);
-
         #[allow(non_snake_case)]
-        let mut R: FieldElement = FieldElement::new(self.n, vec![GF2::new(0); self.n], self.primitive_poly.clone());
+        let mut R: FieldElement = b.copy();
 
+        let mut results: Vec<FieldElement> = Vec::new();
+        let a_bits = self.values.clone().into_iter().rev().collect::<Vec<GF2>>();
         for i in 0..self.n {
-            println!("i : {}, b_prime: {}", i, b_prime);
-            if self.values[i].to_int() == 1 {
-                println!("R: {}, b_prime: {}", R, b_prime);
-                R = &R + &b_prime;
-
-            }
-            b_prime = &b_prime << 1;
+             if a_bits[i].to_int() == 1 {
+                 R = b << i as u8;
+                 results.push(R.clone());
+             }
         }
 
-        R 
+        let result: FieldElement = results.iter().fold(FieldElement::new(self.n, vec![GF2::new(0); self.n], self.primitive_poly.clone()), |acc, x| &acc + x);
+        result
     }
+    
 }
 
 
@@ -121,3 +132,4 @@ fn vec_to_int(values: &Vec<GF2>) -> u32 {
     }
     result
 }
+

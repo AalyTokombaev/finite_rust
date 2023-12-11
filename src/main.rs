@@ -17,8 +17,8 @@ fn main() {
     let x1: FieldElement = field.get_random_element();
     let x2: FieldElement = field.get_random_element();
     */ 
-    let x1: FieldElement = field.from_integer(2);
-    let x2: FieldElement = field.from_integer(4);
+    let x1: FieldElement = field.from_integer(5);
+    let x2: FieldElement = field.from_integer(1);
 
     let _y1 : FieldElement = field.from_integer(4);
     let _y2 : FieldElement = field.from_integer(5);
@@ -28,11 +28,9 @@ fn main() {
 
 
 
-    println!("x1: {}, x2: {}", x1, x2);
 
     let x3: FieldElement = &x1 + &x2;
 
-    println!("x3: {}", x3);
     println!("x1: {}, x2: {}", x1, x2);
 
     let x4 = &x1 * &x2; /* remember mod i done */
@@ -46,7 +44,7 @@ fn main() {
 
     println!("Yeah!");
 
-    let b = field.from_integer(4);
+    let b = field.from_integer(3);
     println!("b: {}", b);
     println!("b << 1 {}", &b << 1);
     println!("b << 2 {}", &b << 2);
