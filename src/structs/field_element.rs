@@ -71,13 +71,13 @@ impl<'a> Mul for &'a FieldElement {
         let mut R: FieldElement = FieldElement::new(self.n, vec![GF2::new(0); self.n], self.primitive_poly.clone());
 
         for i in 0..self.n {
-            b_prime = &b_prime << (1 as u8);
             println!("i : {}, b_prime: {}", i, b_prime);
             if self.values[i].to_int() == 1 {
                 println!("R: {}, b_prime: {}", R, b_prime);
                 R = &R + &b_prime;
 
             }
+            b_prime = &b_prime << 1;
         }
 
         R 
