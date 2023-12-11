@@ -4,6 +4,18 @@ use structs::field::Field;
 use structs::field_element::FieldElement;
 use structs::gf2::GF2;
 
+
+fn test_function(field: &Field, x: &FieldElement) -> FieldElement {
+    // gonna test it for GF(2^3) for now
+    let a_01: FieldElement = field.from_integer(1); // 001
+    let a_02: FieldElement = field.from_integer(4); // 100
+    let a_12: FieldElement = field.from_integer(2); // 010
+    let elements = vec![a_01.clone(), a_02.clone(), a_12.clone()];
+    // recall that F = a_01 * x^{2^0 + 2^1} + a_02* + a_12
+    &(&(&a_01 * &x.pow(3)) + &(&a_02 * &x.pow(4))) + &(&a_12 * &x.pow(6))
+    
+}
+
 fn main() {
     /* 
         gonna use the primitive poly x^3 + x + 1 for now
@@ -31,18 +43,12 @@ fn main() {
 
     println!("e1: {}, e2: {}", e1, e2);
 
-    println!("Yeah!");
 
-    // testing shift operation
-    let mut x = field.from_integer(1);
-    let b = field.from_integer(3);
-    println!("b: {}", b);
-    println!("b << 1 {}", &b << 1);
-    println!("b << 2 {}", &b << 2);
-    println!("b << 3 {}", &b << 3);
-    println!("b << 4 {}", &b << 4);
-    println!("b << 5 {}", &b << 5);
-
+    println!("Testing function");
+    for i in 0..16{
+        let x = field.from_integer(i);
+        println!("x: {}, f(x): {}", x, test_function(&field, &x));
+    }
     
 
 }

@@ -27,6 +27,7 @@ impl FieldElement {
     }
 }
 
+
 impl FieldElement {
     pub fn copy(&self) -> FieldElement {
         let mut new_values = Vec::new();
@@ -77,15 +78,16 @@ impl<'a> Mul for &'a FieldElement {
 
 
     fn mul(self, b: Self) -> FieldElement {
-        #[allow(non_snake_case)]
-        let mut R: FieldElement = b.copy();
+
+        // temporary variable for storing the shifted value
+        let mut acc: FieldElement;
 
         let mut results: Vec<FieldElement> = Vec::new();
         let a_bits = self.values.clone().into_iter().rev().collect::<Vec<GF2>>();
         for i in 0..self.n {
              if a_bits[i].to_int() == 1 {
-                 R = b << i as u8;
-                 results.push(R.clone());
+                 acc = b << i as u8;
+                 results.push(acc.clone());
              }
         }
 
@@ -93,6 +95,16 @@ impl<'a> Mul for &'a FieldElement {
         result
     }
     
+}
+
+impl FieldElement {
+    pub fn pow(&self, n: u32) -> FieldElement {
+        let mut result = self.clone();
+        for _ in 0..n {
+            result = &result * self;
+        }
+        result
+    }
 }
 
 
