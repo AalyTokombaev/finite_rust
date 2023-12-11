@@ -13,10 +13,6 @@ fn main() {
     let field = Field::new(4, primitive_poly);
     println!("{}", field);
 
-    /*
-    let x1: FieldElement = field.get_random_element();
-    let x2: FieldElement = field.get_random_element();
-    */ 
     let x1: FieldElement = field.from_integer(5);
     let x2: FieldElement = field.from_integer(3);
 
@@ -24,16 +20,9 @@ fn main() {
     let _y2 : FieldElement = field.from_integer(5);
 
 
-    
-
-
-
-
-    let x3: FieldElement = &x1 + &x2;
-
     println!("x1: {}, x2: {}", x1, x2);
 
-    let x4 = &x1 * &x2; /* remember mod i done */
+    let x4 = &x1 * &x2; 
     println!("x4 (x1*x2): {}", x4);
 
 
@@ -44,6 +33,8 @@ fn main() {
 
     println!("Yeah!");
 
+    // testing shift operation
+    let mut x = field.from_integer(1);
     let b = field.from_integer(3);
     println!("b: {}", b);
     println!("b << 1 {}", &b << 1);
