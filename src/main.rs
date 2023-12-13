@@ -5,6 +5,7 @@ use structs::field_element::FieldElement;
 use structs::gf2::GF2;
 
 
+
 fn test_function(field: &Field, x: &FieldElement) -> FieldElement {
     // gonna test it for GF(2^3) for now
     let a_01: FieldElement = field.from_integer(1); // 001
@@ -50,5 +51,4 @@ fn main() {
         println!("x: {}, f(x): {}", x, test_function(&field, &x));
     }
     
-
 }
