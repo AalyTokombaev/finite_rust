@@ -3,6 +3,7 @@ mod structs;
 use structs::field::Field;
 use structs::field_element::FieldElement;
 use structs::gf2::GF2;
+use structs::functions::{LinearFunction, QuadraticFunction};
 
 
 
@@ -22,8 +23,8 @@ fn main() {
         gonna use the primitive poly x^3 + x + 1 for now
         this is represented by the string 1011, we cut off the first 1 getting 011
     */
-    let primitive_poly = vec![GF2::new(0), GF2::new(0), GF2::new(1), GF2::new(1)];
-    let field = Field::new(4, primitive_poly);
+    let primitive_poly = vec![GF2::new(0), GF2::new(1), GF2::new(1)];
+    let field = Field::new(3, primitive_poly);
     println!("{}", field);
 
     let x1: FieldElement = field.from_integer(5);
@@ -38,17 +39,12 @@ fn main() {
     let x4 = &x1 * &x2; 
     println!("x4 (x1*x2): {}", x4);
 
+    let c1: FieldElement = field.from_integer(1);
+    let c2: FieldElement = field.from_integer(2);
+    let c3: FieldElement = field.from_integer(3);
+    let c4: FieldElement = field.from_integer(4);
 
-    let e1: GF2 = GF2::new(0);
-    let e2: GF2 = GF2::new(1);
 
-    println!("e1: {}, e2: {}", e1, e2);
+    let f: QuadraticFunction = QuadraticFunction::new(field, vec![c1, c2, c3]);
 
-
-    println!("Testing function");
-    for i in 0..16{
-        let x = field.from_integer(i);
-        println!("x: {}, f(x): {}", x, test_function(&field, &x));
-    }
-    
 }
