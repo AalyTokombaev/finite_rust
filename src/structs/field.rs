@@ -13,6 +13,9 @@ pub struct Field {
 
 impl Field {
     pub fn new(n: usize, primitive_poly: Vec<GF2>) -> Self {
+        if primitive_poly.len() != n {
+            panic!("The length of the primitive polynomial must be equal to the dimension of the field");
+        }
         let mut values = Vec::new();
         for i in 0..(2usize.pow(n as u32)) {
             let mut binary = format!("{:b}", i);
@@ -34,7 +37,6 @@ impl Field {
         if num >= 2u32.pow(self.n as u32) {
             panic!("FieldElement cannot be instantiated with an integer larger than 2^n");
         }
-
         let mut binary = format!("{:b}", num);
         while binary.len() < self.n {
             binary = format!("0{}", binary);

@@ -1,6 +1,6 @@
 extern crate modulo;
 use std::fmt;
-use std::ops::{Add, Mul, Shl};
+use std::ops::{Add, Mul, Shl, AddAssign};
 use std::cmp::PartialEq;
 use super::gf2::{GF2};
 
@@ -73,6 +73,14 @@ impl<'a> Add for &'a FieldElement {
     }
 }
 
+impl AddAssign for FieldElement {
+    fn add_assign(&mut self, other: Self) {
+        for i in 0..self.n {
+            self.values[i] += other.values[i];
+        }
+    }
+}
+
 impl<'a> Mul for &'a FieldElement {
     type Output = FieldElement; 
 
@@ -97,6 +105,8 @@ impl<'a> Mul for &'a FieldElement {
     
 }
 
+
+
 impl FieldElement {
     pub fn pow(&self, n: u32) -> FieldElement {
         let mut result = self.clone();
@@ -106,6 +116,7 @@ impl FieldElement {
         result
     }
 }
+
 
 
 impl PartialEq for FieldElement {

@@ -1,5 +1,5 @@
 use std::fmt;
-use std::ops::{Add, Mul};
+use std::ops::{Add, Mul, AddAssign};
 
 /*
 So let's think for a bit here... I think working with vectors is going to be a lot easier than working with
@@ -58,6 +58,12 @@ impl <'a> Add for &'a GF2 {
 
     fn add(self, other: Self) -> GF2 {
         GF2 { value: self.value ^ other.value }
+    }
+}
+
+impl AddAssign for GF2 {
+    fn add_assign(&mut self, other: Self) {
+        self.value ^= other.value;
     }
 }
 
